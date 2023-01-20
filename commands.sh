@@ -105,13 +105,18 @@ bandit14. For this level, you don’t get the next password, but you
 get a private SSH key that can be used to log into the next level.
 Note: localhost is a hostname that refers to the machine
 you are working on'
+ssh -i sshkey.private bandit14@bandit -p 2220
 
 '15: The password for the next level can be retrieved by submitting the
 password of the current level to port 30000 on localhost.'
+cat /etc/bandit_pass/bandit14 
+echo fGrHPx402xGC7U7rXKDaxiWFTOiF0ENq | nc localhost 30000
 
 '16: The password for the next level can be retrieved by submitting the
 password of the current level to port 30001 on localhost using
 SSL encryption.'
+openssl s_client -ign_eof -connect localhost:30001
+jN2kgmIXJ6fShzhT2avhotn4Zcka6tnt
 
 '17: The credentials for the next level can be retrieved by submitting the
 password of the current level to a port on localhost in the range
@@ -119,11 +124,21 @@ password of the current level to a port on localhost in the range
 listening on them. Then find out which of those speak SSL and which
 don’t. There is only 1 server that will give the next credentials, the
 others will simply send back to you whatever you send to it.'
+netstat -lntu
+openssl s_client -ign_eof -connect localhost:31518
+openssl s_client -ign_eof -connect localhost:31790
+JQttfApK4SeyHwDlI9SXGR50qclOAil1 # output is RSA private key
+mkdir /tmp/drew
+touch /tmp/drew/ssh.key
+chmod 700 /tmp/drew/ssh.key # change permission for ssh -i
+ssh -i /tmp/drew/ssh.key bandit17@bandit -p 2220
 
 '18: There are 2 files in the homedirectory: passwords.old and
 passwords.new. The password for the next level is in
 passwords.new and is the only line that has been changed between
 passwords.old and passwords.new'
+diff passwords.old passwords.new
+
 
 '19: The password for the next level is stored in a file readme in
 the homedirectory. Unfortunately, someone has modified .bashrc
